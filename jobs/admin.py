@@ -1,6 +1,12 @@
 from django.contrib import admin
 from django.db.models import Count
 from django.utils.html import format_html
+from django.conf.urls import url
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404 
+from django.core.mail import send_mail  
+
+
 # Register your models here.
 from.models import Question, Choice, AuthorForm, Author, BookAuthor, Picture, Comment
 
@@ -87,7 +93,7 @@ class ProductiveAuthorsFilter(admin.SimpleListFilter):
         return queryset2
 
 class PictureAdmin(admin.ModelAdmin):
-    list_display = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link' )
+    list_display = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link', 'mail_link')
     list_display_fields = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link' )
     list_filter = [ ProductiveAuthorsFilter]
     list_fields = [ 'object_link']
@@ -108,6 +114,29 @@ class PictureAdmin(admin.ModelAdmin):
         queryset.update(is_promoted=True)
         self.message_user(request, 'The posts are promoted')
     promote.short_description = 'Promote the pictures'
+
+    def mail_link(self, obj):
+        dest = reverse('admin:myapp_pictures_mail_author',
+                       kwargs={'pk': obj.pk})
+        return format_html('<a href="{url}">{title}</a>',
+                           url=dest, title='send mail')
+    mail_link.short_description = 'Show some love'
+    mail_link.allow_tags = True
+
+    def get_urls(self):
+        urls = [
+            url('^(?P<pk>\d+)/sendaletter/?$',
+                self.admin_site.admin_view(self.mail_view),
+                name='myapp_pictures_mail_author'),
+        ]
+        return urls + super(PictureAdmin, self).get_urls()
+
+    def mail_view(self, request, *args, **kwargs):
+        obj = get_object_or_404(Picture, pk=kwargs['pk'])
+        send_mail('Feel the granny\'s love', 'Hey, she loves your pet!',
+                  'granny@yoursite.com', [obj.author.email])
+        self.message_user(request, 'The letter is on its way')
+        return redirect(reverse('admin:myapp_picture_changelist'))
 
 class AuthorAdmin(admin.ModelAdmin):
     list_display_fields = ('name', 'email', )
