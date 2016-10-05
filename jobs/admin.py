@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 
 
 # Register your models here.
-from.models import Question, Choice, AuthorForm, Author, BookAuthor, Picture, Comment
+from.models import Question, Choice, AuthorForm, Author, BookAuthor, Picture, Comment, Person
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
@@ -156,8 +156,11 @@ class CommentAdmin(admin.ModelAdmin):
     #     return qs
     pass
 # admin.site.register(AuthorForm, QuestionAdmin)
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'colored_name')
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Picture, PictureAdmin)
 admin.site.register(BookAuthor, AuthorAdmin)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Person, PersonAdmin)

@@ -6,6 +6,8 @@ import datetime
 
 from django.forms import ModelForm, Textarea
 from django.utils import timezone
+from django.utils.html import format_html
+
 
 # Create your models here.
 TITLE_CHOICES = (
@@ -15,11 +17,21 @@ TITLE_CHOICES = (
 )
 
 class Person(models.Model):
-	name = models.CharField(max_length=30)
-	age = models.IntegerField()
+    name = models.CharField(max_length=30)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
+    age = models.IntegerField()
+    color_code = models.CharField(max_length=6 ,default=0x000000, null=False)
+    def colored_name(self):
+        return format_html(
+            '<span style="color: #{};">{} {}</span>',
+            self.color_code,
+            self.first_name,
+            self.last_name,
+        )
 
-	def __unicode__(self):
-		return self.name
+    def __unicode__(self):
+    	return self.name
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
@@ -109,7 +121,7 @@ class Comment(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return self.author.name + " " +  self.comment
 
-admin.site.register(Person)
+# admin.site.register(Person)
 # admin.site.register(Question)
 admin.site.register(Choice)
 admin.site.register(Author)
