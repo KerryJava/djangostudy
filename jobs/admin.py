@@ -97,6 +97,7 @@ class PictureAdmin(admin.ModelAdmin):
     list_display_fields = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link' )
     list_filter = [ ProductiveAuthorsFilter]
     list_fields = [ 'object_link']
+    list_select_related = True
 
     def object_link(self, item):
         url = item.get_absolute_url()
