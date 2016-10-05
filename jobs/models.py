@@ -96,6 +96,8 @@ class Picture(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return self.title + " " + str(self.animal_kind)
 
+    def get_absolute_url(self):
+        return 'animals/test.html'
 
 
 

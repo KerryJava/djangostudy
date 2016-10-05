@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models import Count
+from django.utils.html import format_html
 # Register your models here.
 from.models import Question, Choice, AuthorForm, Author, BookAuthor, Picture, Comment
 
@@ -86,14 +87,15 @@ class ProductiveAuthorsFilter(admin.SimpleListFilter):
         return queryset2
 
 class PictureAdmin(admin.ModelAdmin):
-    list_display_fields = ('photo', 'animal_kind', 'author', 'is_promoted', )
+    list_display = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link' )
+    list_display_fields = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link' )
     list_filter = [ ProductiveAuthorsFilter]
     list_fields = [ 'object_link']
 
     def object_link(self, item):
         url = item.get_absolute_url()
         return format_html(u'<a href="{url}">open</a>', url=url)
-    object_link.short_description = 'View on site'
+    # object_link.short_description = 'View on site'
 
     actions = ['promote', ]
     # list_editable = ('editors_note', )
