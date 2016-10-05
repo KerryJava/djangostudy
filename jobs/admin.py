@@ -71,7 +71,6 @@ class ProductiveAuthorsFilter(admin.SimpleListFilter):
         print qs.filter(comments__count__lt=self.THRESHOLD)
         print "\nend\n"
         print "-----    " ,  self.YES, self.NO
-
         # return qs.filter(animal_kind=1)
         if str(self.value()) == str(self.YES):
             print "select yes"
@@ -84,11 +83,29 @@ class ProductiveAuthorsFilter(admin.SimpleListFilter):
             return qs.filter(comments__count__lt=self.THRESHOLD)
 
         print "no select "
-        return qs
+        return queryset2
 
 class PictureAdmin(admin.ModelAdmin):
     list_display_fields = ('photo', 'animal_kind', 'author', 'is_promoted', )
     list_filter = [ ProductiveAuthorsFilter]
+    list_fields = [ 'object_link']
+
+    def object_link(self, item):
+        url = item.get_absolute_url()
+        return format_html(u'<a href="{url}">open</a>', url=url)
+    object_link.short_description = 'View on site'
+
+    actions = ['promote', ]
+    # list_editable = ('editors_note', )
+
+
+    def promote(self, request, queryset):
+        print queryset
+        print queryset.query
+        print queryset.model
+        queryset.update(is_promoted=True)
+        self.message_user(request, 'The posts are promoted')
+    promote.short_description = 'Promote the pictures'
 
 class AuthorAdmin(admin.ModelAdmin):
     list_display_fields = ('name', 'email', )
@@ -96,7 +113,8 @@ class AuthorAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display_fields = ('picture', 'author', )
+    list_display = ('picture', 'author', 'editors_note',)
+    list_editable = ("author", "editors_note", )
     # def queryset (self, request):
     #     qs = Question.objects.order_by('-pub_date')[:1]
     #     ordering = self.get_ordering(request)
@@ -104,7 +122,9 @@ class CommentAdmin(admin.ModelAdmin):
     #     if ordering:
     #         qs = qs.order_by(*ordering)
     #     return qs
+    pass
 # admin.site.register(AuthorForm, QuestionAdmin)
+
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Picture, PictureAdmin)
 admin.site.register(BookAuthor, AuthorAdmin)
