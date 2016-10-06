@@ -57,7 +57,7 @@ class Choice(models.Model):
 
 class Author(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE,default=True)
-    headImg = models.FileField(upload_to = './upload/', null=True)
+    headImg = models.FileField(upload_to = 'static/upload/', null=True)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=3, choices=TITLE_CHOICES)
     birth_date = models.DateField(blank=True, null=True)
@@ -103,7 +103,7 @@ class Picture(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(BookAuthor, related_name='pictures')
     animal_kind = models.IntegerField(choices=ANIMAL_KIND_CHOICES)
-    photo = models.ImageField(upload_to='animals')
+    photo = models.ImageField(upload_to='static/animals')
     is_promoted = models.BooleanField(default=False)
     def __str__(self):              # __unicode__ on Python 2
         return self.title + " " + str(self.animal_kind)

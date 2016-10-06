@@ -31,9 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'bootstrap_admin', # always before django.contrib.admin
+    # 'bootstrap_admin', # always before django.contrib.admin
+    'adminactions',
     'django.contrib.admin',
-    'xadmin',
+    # 'xadmin',
     'crispy_forms',
     'reversion',
     'django.contrib.auth',
@@ -42,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'jobs',
+    'daterange_filter'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -126,3 +128,4 @@ LOCALE_PATHS = (
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR + '/ROOT/'

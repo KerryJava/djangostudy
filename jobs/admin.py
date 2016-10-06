@@ -5,10 +5,14 @@ from django.conf.urls import url
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404 
 from django.core.mail import send_mail  
-
+from django.contrib.admin import site
+from adminactions import actions
+from daterange_filter.filter import DateRangeFilter
 
 # Register your models here.
 from.models import Question, Choice, AuthorForm, Author, BookAuthor, Picture, Comment, Person
+
+site_title = "Mjc admin"
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
@@ -24,7 +28,7 @@ class AuthorStackedInline(admin.StackedInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('question_text', 'pub_date', 'was_published_recently')
-    list_filter = ['pub_date', 'question_text'  ]
+    list_filter = ['pub_date', 'question_text',  ('pub_date', DateRangeFilter),  ]
     search_fields = ['question_text']
 
     fieldsets = [
@@ -93,8 +97,8 @@ class ProductiveAuthorsFilter(admin.SimpleListFilter):
         return queryset2
 
 class PictureAdmin(admin.ModelAdmin):
-    list_display = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link', 'mail_link')
-    list_display_fields = ('photo', 'animal_kind', 'author', 'is_promoted', 'object_link' )
+    list_display = ('animal_kind', 'author', 'is_promoted', 'object_link', 'mail_link')
+    list_display_fields = ( 'animal_kind', 'author', 'is_promoted', 'object_link' )
     list_filter = [ ProductiveAuthorsFilter]
     list_fields = [ 'object_link']
     list_select_related = True
@@ -164,3 +168,4 @@ admin.site.register(Picture, PictureAdmin)
 admin.site.register(BookAuthor, AuthorAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Person, PersonAdmin)
+actions.add_to_site(site)

@@ -14,5 +14,7 @@ urlpatterns = [
       url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
       url(r'^(?P<question_id>[0-9]+)/resultsReverse/$', views.resultsReverse, name='resultsReverse'),
       url(r'^(?P<pk>[0-9]+)/resultsGeneric/$', views.ResultsView.as_view(), name='resultsGeneric'),
-
 ]
+
+# urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)  
+
