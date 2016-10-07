@@ -8,6 +8,8 @@ from django.core.mail import send_mail
 from django.contrib.admin import site
 from adminactions import actions
 from daterange_filter.filter import DateRangeFilter
+from django.core import serializers
+from django.http import HttpResponse
 
 # Register your models here.
 from.models import Question, Choice, AuthorForm, Author, BookAuthor, Picture, Comment, Person
@@ -108,7 +110,7 @@ class PictureAdmin(admin.ModelAdmin):
         return format_html(u'<a href="{url}">open</a>', url=url)
     # object_link.short_description = 'View on site'
 
-    actions = ['promote', ]
+    actions = ['promote', 'my_action' ]
     # list_editable = ('editors_note', )
 
 
@@ -120,6 +122,15 @@ class PictureAdmin(admin.ModelAdmin):
         self.message_user(request, 'The posts are promoted')
     promote.short_description = 'Promote the pictures'
 
+    def export_as_json(modeladmin, request, queryset):
+        response = HttpResponse(content_type="application/json")
+        serializers.serialize("json", queryset, stream=response)
+        return response
+
+    def my_action(self, request, queryset):
+        return self.export_as_json(request, queryset)
+
+    my_action.short_description = 'my actions'
     def mail_link(self, obj):
         dest = reverse('admin:myapp_pictures_mail_author',
                        kwargs={'pk': obj.pk})
@@ -162,6 +173,9 @@ class CommentAdmin(admin.ModelAdmin):
 # admin.site.register(AuthorForm, QuestionAdmin)
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'colored_name')
+
+
+
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Picture, PictureAdmin)

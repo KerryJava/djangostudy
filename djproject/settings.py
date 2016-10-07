@@ -25,9 +25,9 @@ SECRET_KEY = '75n5e^7-1&$1k!s%fa^#*)=g)!xhr8v3q!uohk36@gvm2b=j@9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
+ALLOWED_HOSTS = ["localhost"]
+CSRF_COOKIE_DOMAIN = ["localhost"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = (
@@ -99,6 +99,14 @@ DATABASES = {
     }
 }
 
+# Additional locations of static files  
+STATICFILES_DIRS = (  
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".  
+    # Always use forward slashes, even on Windows.  
+    # Don't forget to use absolute paths, not relative paths.  
+  
+    os.path.join(BASE_DIR, "static"),  
+)  
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -129,3 +137,8 @@ LOCALE_PATHS = (
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + '/ROOT/'
+MEDIA_ROOT = './'
+MEDIA_URL='/media/'
+
+
+

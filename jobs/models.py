@@ -103,7 +103,7 @@ class Picture(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(BookAuthor, related_name='pictures')
     animal_kind = models.IntegerField(choices=ANIMAL_KIND_CHOICES)
-    photo = models.ImageField(upload_to='static/animals')
+    photo = models.ImageField(upload_to='photo')
     is_promoted = models.BooleanField(default=False)
     def __str__(self):              # __unicode__ on Python 2
         return self.title + " " + str(self.animal_kind)
